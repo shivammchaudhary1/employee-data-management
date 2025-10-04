@@ -1,4 +1,3 @@
-import React from "react";
 import AllRoutes from "./allRoutes/AllRoutes";
 
 const App = () => {

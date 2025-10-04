@@ -8,7 +8,7 @@ const createEmployee = async (req, res) => {
   try {
     if (!name || !email || !position) {
       return res.status(400).json({
-        message: "Please provide name, email, position, and userId",
+        message: "Please provide name, email, position",
         success: false,
       });
     }
@@ -44,10 +44,8 @@ const getEmployees = async (req, res) => {
 
   try {
     let query = { user: userId };
-
-    // Add name search if provided
     if (name) {
-      query.name = { $regex: name, $options: "i" }; // Case-insensitive search
+      query.name = { $regex: name, $options: "i" };
     }
 
     const employees = await Employee.find(query);
