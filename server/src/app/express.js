@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { config } from "../config/environments/default.js";
 import connectDB from "../config/db/db.js";
+import allRoutes from "../routes/app.routes.js";
 
 const configureExpress = () => {
   //initialize express app
@@ -10,6 +11,8 @@ const configureExpress = () => {
   //middlewares
   app.use(express.json());
   app.use(cors());
+  //routes
+  allRoutes(app);
 
   app.get("/", (req, res) => {
     res.status(200).send({
