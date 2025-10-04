@@ -3,11 +3,12 @@ import Employee from "../models/employee.model.js";
 // Create a new employee
 const createEmployee = async (req, res) => {
   const { name, email, position } = req.body;
+  const userId = req.user.userId;
 
   try {
     if (!name || !email || !position) {
       return res.status(400).json({
-        message: "Please provide name, email, and position",
+        message: "Please provide name, email, position, and userId",
         success: false,
       });
     }
@@ -20,7 +21,7 @@ const createEmployee = async (req, res) => {
         .json({ message: "Email already exists", success: false });
     }
 
-    const employee = new Employee({ name, email, position });
+    const employee = new Employee({ name, email, position, user: userId });
     const savedEmployee = await employee.save();
     res.status(201).json({
       message: "Employee created successfully",
@@ -38,8 +39,11 @@ const createEmployee = async (req, res) => {
 
 // Get all employees
 const getEmployees = async (req, res) => {
+  const userId = req.user.userId;
+
+  console.log("Fetching employees for user:", userId);
   try {
-    const employees = await Employee.find();
+    const employees = await Employee.find({ user: userId });
     res.status(200).json({
       message: "Employees fetched successfully",
       employees,
@@ -82,7 +86,6 @@ const getEmployeeById = async (req, res) => {
 const updateEmployee = async (req, res) => {
   try {
     const employeeId = req.params.id;
-    const { name, email, position } = req.body;
 
     const updatedEmployee = await Employee.findByIdAndUpdate(
       employeeId,

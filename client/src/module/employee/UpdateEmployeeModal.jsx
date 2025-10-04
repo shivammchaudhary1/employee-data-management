@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { updateEmployee } from "../../redux/slices/employeeSlice";
 import { useDispatch } from "react-redux";
 
-const UpdateEmployeeModal = ({ isOpen, onClose, employeeData }) => {
+const UpdateEmployeeModal = ({ isOpen, onClose, employeeData, token }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
@@ -30,7 +30,7 @@ const UpdateEmployeeModal = ({ isOpen, onClose, employeeData }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateEmployee({ ...formData, id: employeeData._id }));
+    dispatch(updateEmployee({ ...formData, id: employeeData._id, token }));
     onClose();
   };
 

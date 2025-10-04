@@ -9,21 +9,25 @@ import {
   deleteEmployee,
 } from "../../redux/slices/employeeSlice.js";
 import { useDispatch, useSelector } from "react-redux";
-import { selectIsAuthenticated } from "../../redux/slices/authslice.js";
+import {
+  selectIsAuthenticated,
+  selectToken,
+} from "../../redux/slices/authslice.js";
 import { useNavigate } from "react-router-dom";
 
 const Employee = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const token = useSelector(selectToken);
   const employeesData = useSelector(selectAllEmployeesData);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
-    dispatch(getAllEmployees());
-  }, [dispatch]);
+    dispatch(getAllEmployees({ token }));
+  }, [dispatch, token]);
 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
@@ -39,7 +43,7 @@ const Employee = () => {
 
   const handleDelete = (employeeId) => () => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      dispatch(deleteEmployee(employeeId));
+      dispatch(deleteEmployee({ employeeId, token }));
     }
   };
   return (
@@ -92,12 +96,14 @@ const Employee = () => {
           <AddEmployeeModal
             isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}
+            token={token}
           />
 
           <UpdateEmployeeModal
             isOpen={isUpdateModalOpen}
             onClose={() => setIsUpdateModalOpen(false)}
             employeeData={selectedEmployee}
+            token={token}
           />
 
           <div className="mt-8 flex flex-col">
