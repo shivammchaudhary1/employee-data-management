@@ -1,22 +1,47 @@
 import React, { useState, useEffect } from "react";
 import AddEmployeeModal from "./AddEmployeeModal";
+import UpdateEmployeeModal from "./UpdateEmployeeModal";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import {
   getAllEmployees,
   selectAllEmployeesData,
+  deleteEmployee,
 } from "../../redux/slices/employeeSlice.js";
 import { useDispatch, useSelector } from "react-redux";
+import { selectIsAuthenticated } from "../../redux/slices/authslice.js";
+import { useNavigate } from "react-router-dom";
 
 const Employee = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const employeesData = useSelector(selectAllEmployeesData);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
 
   useEffect(() => {
     dispatch(getAllEmployees());
   }, [dispatch]);
 
+  const handleEdit = (employee) => {
+    setSelectedEmployee(employee);
+    setIsUpdateModalOpen(true);
+  };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      // If not authenticated, redirect to login page
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleDelete = (employeeId) => () => {
+    if (window.confirm("Are you sure you want to delete this employee?")) {
+      dispatch(deleteEmployee(employeeId));
+    }
+  };
   return (
     <>
       <Navbar />
@@ -45,7 +70,7 @@ const Employee = () => {
 
           <div className="flex justify-end mt-6 mb-4">
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => setIsAddModalOpen(true)}
               className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
             >
               <svg
@@ -65,8 +90,14 @@ const Employee = () => {
           </div>
 
           <AddEmployeeModal
-            isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            isOpen={isAddModalOpen}
+            onClose={() => setIsAddModalOpen(false)}
+          />
+
+          <UpdateEmployeeModal
+            isOpen={isUpdateModalOpen}
+            onClose={() => setIsUpdateModalOpen(false)}
+            employeeData={selectedEmployee}
           />
 
           <div className="mt-8 flex flex-col">
@@ -124,10 +155,16 @@ const Employee = () => {
                             {item.position}
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                            <button className="text-indigo-600 hover:text-indigo-900 mr-4">
+                            <button
+                              className="text-indigo-600 hover:text-indigo-900 mr-4"
+                              onClick={() => handleEdit(item)}
+                            >
                               Edit
                             </button>
-                            <button className="text-red-600 hover:text-red-900">
+                            <button
+                              className="text-red-600 hover:text-red-900"
+                              onClick={handleDelete(item._id)}
+                            >
                               Delete
                             </button>
                           </td>

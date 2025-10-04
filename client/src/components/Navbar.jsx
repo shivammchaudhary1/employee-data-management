@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectIsAuthenticated, setLogout } from "../redux/slices/authslice";
+import assets from "../assets/assets";
 
 const Navbar = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
@@ -19,7 +20,7 @@ const Navbar = () => {
         <div className="flex justify-between h-16">
           <div className="flex items-center">
             <Link to="/" className="text-xl font-bold text-indigo-600">
-              EDM
+              <img src={assets.logo} alt="Logo" className="h-12" />
             </Link>
           </div>
 
@@ -48,12 +49,12 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                {/* <Link
+                <Link
                   to="/employee"
                   className="text-gray-700 hover:text-indigo-600 transition"
                 >
                   Employee
-                </Link> */}
+                </Link>
                 <button
                   onClick={handleLogout}
                   className="text-gray-700 hover:text-indigo-600 transition cursor-pointer"

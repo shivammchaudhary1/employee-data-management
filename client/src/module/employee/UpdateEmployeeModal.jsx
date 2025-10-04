@@ -1,14 +1,24 @@
-import React, { useState } from "react";
-import { addEmployee } from "../../redux/slices/employeeSlice";
+import React, { useState, useEffect } from "react";
+import { updateEmployee } from "../../redux/slices/employeeSlice";
 import { useDispatch } from "react-redux";
 
-const AddEmployeeModal = ({ isOpen, onClose }) => {
+const UpdateEmployeeModal = ({ isOpen, onClose, employeeData }) => {
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     position: "",
   });
+
+  useEffect(() => {
+    if (employeeData) {
+      setFormData({
+        name: employeeData.name,
+        email: employeeData.email,
+        position: employeeData.position,
+      });
+    }
+  }, [employeeData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,7 +30,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(addEmployee(formData));
+    dispatch(updateEmployee({ ...formData, id: employeeData._id }));
     onClose();
   };
 
@@ -31,7 +41,7 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
       <div className="bg-white p-8 rounded-lg w-full max-w-md relative">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-2xl font-semibold text-gray-900">
-            Add New Employee
+            Update Employee
           </h2>
           <button
             onClick={onClose}
@@ -100,15 +110,15 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md text-sm font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Add Employee
+              Update
             </button>
           </div>
         </form>
@@ -117,4 +127,4 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default AddEmployeeModal;
+export default UpdateEmployeeModal;

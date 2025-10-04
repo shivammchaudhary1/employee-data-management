@@ -4,7 +4,7 @@ import { createJWT } from "../config/libraries/jwt.js";
 
 const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({
@@ -30,7 +30,7 @@ const register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
-      role,
+     
     });
 
     // Create token
@@ -43,7 +43,7 @@ const register = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        isAdmin: user.role === "admin",
+    
       },
     });
   } catch (error) {
@@ -86,7 +86,7 @@ const login = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        isAdmin: user.role === "admin",
+      
       },
     });
   } catch (error) {

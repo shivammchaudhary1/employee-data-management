@@ -26,14 +26,93 @@ export const getAllEmployees = createAsyncThunk(
   }
 );
 
+export const addEmployee = createAsyncThunk(
+  "employee/addEmployee",
+  async (employeeData, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `${config.BACKEND_URL}/api/employees/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(employeeData),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const updateEmployee = createAsyncThunk(
+  "employee/updateEmployee",
+  async (employeeData, thunkAPI) => {
+    try {
+      const response = await fetch(
+        `${config.BACKEND_URL}/api/employees/update/${employeeData.id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(employeeData),
+        }
+      );
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteEmployee = createAsyncThunk(
+  "employee/deleteEmployee",
+  async (employeeId, thunkAPI) => {
+    try {
+      await fetch(`${config.BACKEND_URL}/api/employees/delete/${employeeId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // const data = await response.json();
+      return employeeId;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const employeeSlice = createSlice({
   name: "employee",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllEmployees.fulfilled, (state, action) => {
-      console.log("Fetched Employees:", action.payload);
+      //   console.log("Fetched Employees:", action.payload);
       state.employees = action.payload.employees;
+    });
+    builder.addCase(addEmployee.fulfilled, (state, action) => {
+      state.employees.push(action.payload.employee);
+    });
+    builder.addCase(updateEmployee.fulfilled, (state, action) => {
+      const index = state.employees.findIndex(
+        (emp) => emp._id === action.payload.employee._id
+      );
+      if (index !== -1) {
+        state.employees[index] = action.payload.employee;
+      }
+    });
+    builder.addCase(deleteEmployee.fulfilled, (state, action) => {
+      console.log("Deleted Employee ID:", action.payload);
+      state.employees = state.employees.filter(
+        (emp) => emp._id !== action.payload
+      );
     });
   },
 });
