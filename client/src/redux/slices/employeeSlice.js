@@ -7,18 +7,20 @@ const initialState = {
 
 export const getAllEmployees = createAsyncThunk(
   "employee/getAllEmployees",
-  async ({ token }, thunkAPI) => {
+  async ({ token, searchQuery = "" }, thunkAPI) => {
     try {
-      const response = await fetch(
-        `${config.BACKEND_URL}/api/employees/getAll`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const url = new URL(`${config.BACKEND_URL}/api/employees/getAll`);
+      if (searchQuery) {
+        url.searchParams.append("name", searchQuery);
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -99,9 +101,9 @@ export const employeeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllEmployees.fulfilled, (state, action) => {
-      //   console.log("Fetched Employees:", action.payload);
       state.employees = action.payload.employees;
     });
+
     builder.addCase(addEmployee.fulfilled, (state, action) => {
       state.employees.push(action.payload.employee);
     });

@@ -37,13 +37,20 @@ const createEmployee = async (req, res) => {
   }
 };
 
-// Get all employees
+// Get all employees with optional search by name
 const getEmployees = async (req, res) => {
   const userId = req.user.userId;
+  const { name } = req.query;
 
-  console.log("Fetching employees for user:", userId);
   try {
-    const employees = await Employee.find({ user: userId });
+    let query = { user: userId };
+
+    // Add name search if provided
+    if (name) {
+      query.name = { $regex: name, $options: "i" }; // Case-insensitive search
+    }
+
+    const employees = await Employee.find(query);
     res.status(200).json({
       message: "Employees fetched successfully",
       employees,

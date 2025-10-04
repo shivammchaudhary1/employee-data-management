@@ -24,10 +24,23 @@ const Employee = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
+  // Initial load of employees
   useEffect(() => {
     dispatch(getAllEmployees({ token }));
   }, [dispatch, token]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatch(getAllEmployees({ token, searchQuery }));
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    // Load all employees when search is cleared
+    dispatch(getAllEmployees({ token }));
+  };
 
   const handleEdit = (employee) => {
     setSelectedEmployee(employee);
@@ -59,16 +72,44 @@ const Employee = () => {
 
           <div>
             <div className="mt-4 sm:mt-0">
-              <div className="flex space-x-4">
+              <form onSubmit={handleSearch} className="flex space-x-4">
                 <input
                   type="text"
                   placeholder="Search by name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
                 />
-                <button className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                  Search
-                </button>
-              </div>
+                <div className="flex space-x-2">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 mr-2"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    Search
+                  </button>
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={handleClearSearch}
+                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              </form>
             </div>
           </div>
 
