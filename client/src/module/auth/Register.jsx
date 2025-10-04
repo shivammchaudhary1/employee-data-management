@@ -1,9 +1,17 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../components/Footer";
 import Navbar from "../../components/Navbar";
+import {
+  registerUser,
+  selectIsAuthenticated,
+} from "../../redux/slices/authslice.js";
+import { useDispatch, useSelector } from "react-redux";
 
 const Register = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,10 +26,32 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/employee");
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your registration logic here
-    console.log("Registration data:", formData);
+    // console.log("Registration data:", formData);
+    // dispatch(registerUser(formData));
+
+    try {
+      const response = await dispatch(registerUser(formData)).unwrap();
+
+      if (response.success) {
+        setFormData({
+          name: "",
+          email: "",
+          password: "",
+        });
+      } else {
+        console.error("Registration failed:", response);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+    }
   };
 
   return (

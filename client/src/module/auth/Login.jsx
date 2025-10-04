@@ -1,13 +1,24 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser, selectIsAuthenticated } from "../../redux/slices/authslice";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/employee");
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -17,10 +28,23 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Add your login logic here
-    console.log("Login data:", formData);
+    try {
+      
+      const response = await dispatch(loginUser(formData)).unwrap();
+
+      if (response.success) {
+        setFormData({
+          email: "",
+          password: "",
+        });
+      } else {
+        console.error("Login failed:", response);
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (
