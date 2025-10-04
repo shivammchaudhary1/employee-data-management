@@ -19,6 +19,7 @@ export const protect = async (req, res, next) => {
     try {
       // Verify token
       const decoded = verifyJWT(token);
+     
       req.user = decoded;
       next();
     } catch (error) {

@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { addEmployee } from "../../redux/slices/employeeSlice";
 import { useDispatch } from "react-redux";
 
-const AddEmployeeModal = ({ isOpen, onClose }) => {
+const AddEmployeeModal = ({ isOpen, onClose, token }) => {
   const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,10 +19,15 @@ const AddEmployeeModal = ({ isOpen, onClose }) => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(addEmployee(formData));
+    await dispatch(addEmployee({ formData, token }));
     onClose();
+    setFormData({
+      name: "",
+      email: "",
+      position: "",
+    });
   };
 
   if (!isOpen) return null;

@@ -7,17 +7,20 @@ const initialState = {
 
 export const getAllEmployees = createAsyncThunk(
   "employee/getAllEmployees",
-  async (_, thunkAPI) => {
+  async ({ token, searchQuery = "" }, thunkAPI) => {
     try {
-      const response = await fetch(
-        `${config.BACKEND_URL}/api/employees/getAll`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const url = new URL(`${config.BACKEND_URL}/api/employees/getAll`);
+      if (searchQuery) {
+        url.searchParams.append("name", searchQuery);
+      }
+
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
       const data = await response.json();
       return data;
     } catch (error) {
@@ -28,7 +31,7 @@ export const getAllEmployees = createAsyncThunk(
 
 export const addEmployee = createAsyncThunk(
   "employee/addEmployee",
-  async (employeeData, thunkAPI) => {
+  async ({ formData, token }, thunkAPI) => {
     try {
       const response = await fetch(
         `${config.BACKEND_URL}/api/employees/create`,
@@ -36,8 +39,9 @@ export const addEmployee = createAsyncThunk(
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify(employeeData),
+          body: JSON.stringify(formData),
         }
       );
       const data = await response.json();
@@ -58,7 +62,9 @@ export const updateEmployee = createAsyncThunk(
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${employeeData.token}`,
           },
+
           body: JSON.stringify(employeeData),
         }
       );
@@ -72,12 +78,13 @@ export const updateEmployee = createAsyncThunk(
 
 export const deleteEmployee = createAsyncThunk(
   "employee/deleteEmployee",
-  async (employeeId, thunkAPI) => {
+  async ({ employeeId, token }, thunkAPI) => {
     try {
       await fetch(`${config.BACKEND_URL}/api/employees/delete/${employeeId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
       // const data = await response.json();
@@ -94,9 +101,9 @@ export const employeeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(getAllEmployees.fulfilled, (state, action) => {
-      //   console.log("Fetched Employees:", action.payload);
       state.employees = action.payload.employees;
     });
+
     builder.addCase(addEmployee.fulfilled, (state, action) => {
       state.employees.push(action.payload.employee);
     });
