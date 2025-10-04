@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import AddEmployeeModal from "./AddEmployeeModal";
 import UpdateEmployeeModal from "./UpdateEmployeeModal";
 import Navbar from "../../components/Navbar";
@@ -8,15 +10,13 @@ import {
   selectAllEmployeesData,
   deleteEmployee,
 } from "../../redux/slices/employeeSlice.js";
-import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsAuthenticated,
   selectToken,
 } from "../../redux/slices/authslice.js";
-import { useNavigate } from "react-router-dom";
 
 const Employee = () => {
-  const dispatch = useDispatch();
+  const dispatchToRedux = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const token = useSelector(selectToken);
@@ -28,24 +28,8 @@ const Employee = () => {
 
   // Initial load of employees
   useEffect(() => {
-    dispatch(getAllEmployees({ token }));
-  }, [dispatch, token]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    dispatch(getAllEmployees({ token, searchQuery }));
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    // Load all employees when search is cleared
-    dispatch(getAllEmployees({ token }));
-  };
-
-  const handleEdit = (employee) => {
-    setSelectedEmployee(employee);
-    setIsUpdateModalOpen(true);
-  };
+    dispatchToRedux(getAllEmployees({ token }));
+  }, [dispatchToRedux, token]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -54,11 +38,27 @@ const Employee = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatchToRedux(getAllEmployees({ token, searchQuery }));
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    dispatchToRedux(getAllEmployees({ token }));
+  };
+
+  const handleEdit = (employee) => {
+    setSelectedEmployee(employee);
+    setIsUpdateModalOpen(true);
+  };
+
   const handleDelete = (employeeId) => () => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      dispatch(deleteEmployee({ employeeId, token }));
+      dispatchToRedux(deleteEmployee({ employeeId, token }));
     }
   };
+
   return (
     <>
       <Navbar />

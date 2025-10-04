@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectIsAuthenticated, setLogout } from "../redux/slices/authslice";
@@ -6,11 +5,11 @@ import assets from "../assets/assets";
 
 const Navbar = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const dispatch = useDispatch();
+  const dispatchToRedux = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(setLogout());
+    dispatchToRedux(setLogout());
     navigate("/");
   };
 

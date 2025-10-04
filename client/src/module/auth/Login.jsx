@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser, selectIsAuthenticated } from "../../redux/slices/authslice";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
 
 const Login = () => {
-  const dispatch = useDispatch();
+  const dispatchToRedux = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -31,8 +32,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      
-      const response = await dispatch(loginUser(formData)).unwrap();
+      const response = await dispatchToRedux(loginUser(formData)).unwrap();
 
       if (response.success) {
         setFormData({
