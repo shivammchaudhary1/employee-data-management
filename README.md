@@ -82,51 +82,56 @@ employee-data-management/
 ### Installation
 
 1. Clone the repository:
-   \`\`\`bash
+
+   ```bash
    git clone https://github.com/shivammchaudhary1/employee-data-management
    cd employee-data-management
-   \`\`\`
+   ```
 
 2. Install server (backend) dependencies:
-   \`\`\`bash
+
+   ```bash
    cd server
    npm install
-   \`\`\`
+   ```
 
 3. Create a .env file in the server directory:
-   \`\`\`env
+
+   ```env
    PORT=8080
    MONGO_URI=mongodb://localhost:27017/employee-db
    JWT_SECRET=your_jwt_secret_key
    JWT_EXPIRES_IN=1d
    SALT_ROUNDS=10
-   \`\`\`
+   ```
 
 4. Install client (frontend) dependencies:
-   \`\`\`bash
+
+   ```bash
    cd ../client
    npm install
-   \`\`\`
+   ```
 
 5. Create a .env file in the client directory:
-   \`\`\`env
+   ```env
    VITE_FRONTEND_URL=http://localhost:5173
    VITE_BACKEND_URL=http://localhost:8080
-   \`\`\`
+   ```
 
 ### Running the Application
 
 1. Start the backend server:
-   \`\`\`bash
+
+   ```bash
    cd server
    npm run dev
-   \`\`\`
+   ```
 
 2. Start the frontend development server:
-   \`\`\`bash
+   ```bash
    cd client
    npm run dev
-   \`\`\`
+   ```
 
 The application will be available at:
 
