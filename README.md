@@ -4,6 +4,10 @@ A modern, full-stack web application for managing employee data with authenticat
 
 ## 🚀 Features
 
+
+image and logo fenearte from goole gemini
+
+
 - **User Authentication**
 
   - Register new account

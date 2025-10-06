@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import AddEmployeeModal from "./AddEmployeeModal";
 import UpdateEmployeeModal from "./UpdateEmployeeModal";
 import Navbar from "../../components/Navbar";
@@ -8,15 +10,17 @@ import {
   selectAllEmployeesData,
   deleteEmployee,
 } from "../../redux/slices/employeeSlice.js";
-import { useDispatch, useSelector } from "react-redux";
 import {
   selectIsAuthenticated,
   selectToken,
 } from "../../redux/slices/authslice.js";
-import { useNavigate } from "react-router-dom";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
+import { IoSearch } from "react-icons/io5";
+import { FaPlus } from "react-icons/fa6";
 
 const Employee = () => {
-  const dispatch = useDispatch();
+  const dispatchToRedux = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const token = useSelector(selectToken);
@@ -28,24 +32,8 @@ const Employee = () => {
 
   // Initial load of employees
   useEffect(() => {
-    dispatch(getAllEmployees({ token }));
-  }, [dispatch, token]);
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    dispatch(getAllEmployees({ token, searchQuery }));
-  };
-
-  const handleClearSearch = () => {
-    setSearchQuery("");
-    // Load all employees when search is cleared
-    dispatch(getAllEmployees({ token }));
-  };
-
-  const handleEdit = (employee) => {
-    setSelectedEmployee(employee);
-    setIsUpdateModalOpen(true);
-  };
+    dispatchToRedux(getAllEmployees({ token }));
+  }, [dispatchToRedux, token]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -54,84 +42,80 @@ const Employee = () => {
     }
   }, [isAuthenticated, navigate]);
 
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatchToRedux(getAllEmployees({ token, searchQuery }));
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+    dispatchToRedux(getAllEmployees({ token }));
+  };
+
+  const handleEdit = (employee) => {
+    setSelectedEmployee(employee);
+    setIsUpdateModalOpen(true);
+  };
+
   const handleDelete = (employeeId) => () => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      dispatch(deleteEmployee({ employeeId, token }));
+      dispatchToRedux(deleteEmployee({ employeeId, token }));
     }
   };
+
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex justify-center mb-6">
-            <h1 className="text-3xl font-bold text-gray-900 text-center">
+      <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8 flex justify-center items-start">
+        <div className="max-w-7xl w-full mx-auto border border-gray-200 bg-white p-8 rounded-xl shadow-lg h-[85vh] overflow-auto">
+          <div className="flex justify-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-800 text-center border-b-2 border-gray-800 pb-2 px-4">
               Employee List
             </h1>
           </div>
 
-          <div>
-            <div className="mt-4 sm:mt-0">
-              <form onSubmit={handleSearch} className="flex space-x-4">
+          <div className="mt-4 sm:mt-0 mb-6">
+            <form
+              onSubmit={handleSearch}
+              className="flex items-center justify-between gap-4 flex-wrap md:flex-nowrap"
+            >
+              <div className="flex-1 min-w-[200px]">
                 <input
                   type="text"
-                  placeholder="Search by name..."
+                  placeholder="Search employees by name..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md p-2"
+                  className="shadow-sm focus:ring-gray-600 focus:border-gray-500 block w-full sm:text-sm border-gray-300 rounded-lg p-3 bg-gray-50"
                 />
-                <div className="flex space-x-2">
+              </div>
+              <div className="flex space-x-2 flex-shrink-0">
+                <button
+                  type="submit"
+                  className="inline-flex items-center px-5 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 cursor-pointer"
+                >
+                  <IoSearch className="h-5 w-5 mr-2" />
+                  Search
+                </button>
+                {searchQuery && (
                   <button
-                    type="submit"
-                    className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    type="button"
+                    onClick={handleClearSearch}
+                    className="inline-flex items-center px-5 py-2 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 cursor-pointer"
                   >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 mr-2"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    Search
+                    Clear
                   </button>
-                  {searchQuery && (
-                    <button
-                      type="button"
-                      onClick={handleClearSearch}
-                      className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                    >
-                      Clear
-                    </button>
-                  )}
-                </div>
-              </form>
-            </div>
-          </div>
+                )}
 
-          <div className="flex justify-end mt-6 mb-4">
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Add New Employee
-            </button>
+                <button
+                  type="button"
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="inline-flex items-center px-5 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 cursor-pointer"
+                >
+                  <FaPlus className="h-5 w-5 mr-2" />
+                  Add New Employee
+                </button>
+              </div>
+            </form>
           </div>
 
           <AddEmployeeModal
@@ -150,9 +134,9 @@ const Employee = () => {
           <div className="mt-8 flex flex-col">
             <div className="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
               <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
-                  <table className="min-w-full divide-y divide-gray-300">
-                    <thead className="bg-gray-50">
+                <div className="overflow-hidden shadow-md border border-gray-200 rounded-lg">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-100">
                       <tr>
                         <th
                           scope="col"
@@ -180,9 +164,9 @@ const Employee = () => {
                         </th>
                         <th
                           scope="col"
-                          className="relative py-3.5 pl-3 pr-4 sm:pr-6"
+                          className="px-3 py-3.5 text-right text-sm font-semibold text-gray-900"
                         >
-                          <span className="sr-only">Actions</span>
+                          Actions
                         </th>
                       </tr>
                     </thead>
@@ -203,16 +187,18 @@ const Employee = () => {
                           </td>
                           <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                             <button
-                              className="text-indigo-600 hover:text-indigo-900 mr-4"
+                              className="p-1.5 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-full mr-3 transition-colors duration-200 cursor-pointer"
                               onClick={() => handleEdit(item)}
+                              title="Edit Employee"
                             >
-                              Edit
+                              <MdEdit size={20} />
                             </button>
                             <button
-                              className="text-red-600 hover:text-red-900"
+                              className="p-1.5 bg-red-100 text-red-600 hover:bg-red-200 rounded-full transition-colors duration-200 cursor-pointer"
                               onClick={handleDelete(item._id)}
+                              title="Delete Employee"
                             >
-                              Delete
+                              <MdDelete size={20} />
                             </button>
                           </td>
                         </tr>

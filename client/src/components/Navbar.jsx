@@ -1,4 +1,3 @@
-import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { selectIsAuthenticated, setLogout } from "../redux/slices/authslice";
@@ -6,29 +5,29 @@ import assets from "../assets/assets";
 
 const Navbar = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
-  const dispatch = useDispatch();
+  const dispatchToRedux = useDispatch();
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    dispatch(setLogout());
+    dispatchToRedux(setLogout());
     navigate("/");
   };
 
   return (
-    <nav className="bg-white shadow-lg">
+    <nav className="bg-gray-800 text-white shadow-lg">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between h-16">
           <div className="flex items-center">
-            <Link to="/" className="text-xl font-bold text-indigo-600">
+            <Link
+              to="/"
+              className="text-xl font-bold hover:text-white transition"
+            >
               <img src={assets.logo} alt="Logo" className="h-12" />
             </Link>
           </div>
 
           <div className="flex items-center space-x-8">
-            <Link
-              to="/"
-              className="text-gray-700 hover:text-indigo-600 transition"
-            >
+            <Link to="/" className="text-white hover:text-white transition">
               Home
             </Link>
 
@@ -36,13 +35,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/login"
-                  className="text-gray-700 hover:text-indigo-600 transition"
+                  className="text-white hover:text-white transition"
                 >
                   Login
                 </Link>
                 <Link
                   to="/register"
-                  className="text-gray-700 hover:text-indigo-600 transition"
+                  className="text-white hover:text-white transition"
                 >
                   Register
                 </Link>
@@ -51,13 +50,13 @@ const Navbar = () => {
               <>
                 <Link
                   to="/employee"
-                  className="text-gray-700 hover:text-indigo-600 transition"
+                  className="text-white hover:text-white transition"
                 >
                   Employee
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="text-gray-700 hover:text-indigo-600 transition cursor-pointer"
+                  className="text-white hover:text-white transition cursor-pointer"
                 >
                   Logout
                 </button>

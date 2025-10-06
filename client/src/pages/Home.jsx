@@ -1,7 +1,7 @@
-import React from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import assets from "../assets/assets";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -32,9 +32,11 @@ const Home = () => {
                 </p>
               </div>
               <div className="mt-8">
-                <button className="bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors">
-                  Get Started
-                </button>
+                <Link to="/register">
+                  <button className="bg-gray-800 text-white px-6 py-3 rounded-md hover:bg-gray-700 transition-colors cursor-pointer">
+                    Get Started
+                  </button>
+                </Link>
               </div>
             </div>
 
