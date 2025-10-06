@@ -1,6 +1,6 @@
 # Employee Data Management System (EDM)
 
-A modern, full-stack web application for managing employee data with authentication, built using the MERN stack (MongoDB, Express.js, React, Node.js) with Redux Toolkit for state management and TailwindCSS for styling. This application provides a complete solution for organizations to efficiently manage employee information with secure authentication and role-based access control.
+A simple, full-stack web application for managing employee data with authentication, built using the MERN stack (MongoDB, Express.js, React, Node.js) with Redux Toolkit for state management and TailwindCSS for styling.
 
 ## 🚀 Features
 
@@ -20,11 +20,10 @@ A modern, full-stack web application for managing employee data with authenticat
   - Search employees by name
 
 - **User Interface**
-  - Responsive design using TailwindCSS
   - Modern and clean UI
-  - Loading states and error handling
   - Modal-based forms for adding/editing
   - Interactive data table
+  - Image Generated from Google Gemini
 
 ## 🛠️ Tech Stack
 
@@ -34,6 +33,7 @@ A modern, full-stack web application for managing employee data with authenticat
 - Redux Toolkit for state management
 - React Router for navigation
 - TailwindCSS for styling
+- React Icons for icons
 
 ### Backend
 
@@ -76,18 +76,18 @@ employee-data-management/
 ### Prerequisites
 
 - Node.js >= 14.x
-- MongoDB installed and running
+- MongoDB installed and running locally, or use [MongoDB Atlas](https://www.mongodb.com/products/platform/atlas-database) for web-based usage.
 - npm or yarn package manager
 
 ### Installation
 
 1. Clone the repository:
    \`\`\`bash
-   git clone https://github.com/yourusername/employee-data-management.git
+   git clone https://github.com/shivammchaudhary1/employee-data-management
    cd employee-data-management
    \`\`\`
 
-2. Install server dependencies:
+2. Install server (backend) dependencies:
    \`\`\`bash
    cd server
    npm install
@@ -102,7 +102,7 @@ employee-data-management/
    SALT_ROUNDS=10
    \`\`\`
 
-4. Install client dependencies:
+4. Install client (frontend) dependencies:
    \`\`\`bash
    cd ../client
    npm install
@@ -156,48 +156,6 @@ The application will be available at:
 - Phone: +91 9169235786
 - Location: Lucknow, Uttar Pradesh, India
 
-## 🧪 Running Tests
-
-### Backend Tests
-
-1. Navigate to the server directory:
-
-   ```bash
-   cd server
-   ```
-
-2. Run the test suite:
-
-   ```bash
-   npm test
-   ```
-
-   For running tests with coverage:
-
-   ```bash
-   npm run test:coverage
-   ```
-
-### Frontend Tests
-
-1. Navigate to the client directory:
-
-   ```bash
-   cd client
-   ```
-
-2. Run the test suite:
-
-   ```bash
-   npm test
-   ```
-
-   For running tests in watch mode:
-
-   ```bash
-   npm run test:watch
-   ```
-
 ## 🤔 Assumptions and Design Decisions
 
 ### Architecture Decisions
@@ -217,16 +175,6 @@ The application will be available at:
 2. **Protected Routes**: Both frontend and backend routes are protected based on authentication status.
 
 3. **Environment Variables**: Sensitive information is stored in environment variables instead of being hardcoded.
-
-### Future Enhancements
-
-1. **Role-Based Access Control**: Plans to implement different user roles (admin, manager, employee).
-
-2. **Advanced Filtering**: Enhanced search capabilities for employee records.
-
-3. **Data Export**: Functionality to export employee data in various formats (CSV, PDF).
-
-4. **Audit Logging**: Track changes made to employee records for compliance and security.
 
 ## 📄 License
 
